@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Currency Converter</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; }
+        .container { max-width: 400px; margin: 50px auto; padding: 24px; background: #fff; box-shadow: 0 2px 8px #ccc; }
+        h2 { text-align: center; }
+        label, select, input { display: block; width: 100%; margin: 12px 0; }
+        button { width: 100%; padding: 10px; background: #007bff; color: #fff; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { text-align: center; margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Currency Converter</h2>
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" value="1" min="0" />
+    <label for="from">From:</label>
+    <select id="from">
+        <option value="usd">USD</option>
+        <option value="eur">EUR</option>
+        <option value="inr">INR</option>
+        <!-- Add more currencies as needed -->
+    </select>
+    <label for="to">To:</label>
+    <select id="to">
+        <option value="inr">INR</option>
+        <option value="usd">USD</option>
+        <option value="eur">EUR</option>
+    </select>
+    <button id="convert">Convert</button>
+    <div id="result" class="result"></div>
+</div>
+
+<script>
+document.getElementById("convert").onclick = async function() {
+    let amount = parseFloat(document.getElementById("amount").value);
+    let from = document.getElementById("from").value;
+    let to = document.getElementById("to").value;
+    let resultDiv = document.getElementById("result");
+
+    resultDiv.textContent = "Converting...";
+    try {
+        // Simple, free API: fawazahmed0/exchange-api (No key required)
+        let resp = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${from}.json`);
+        let data = await resp.json();
+        let rate = data[from][to];
+        let converted = (amount * rate).toFixed(2);
+        resultDiv.textContent = `${amount} ${from.toUpperCase()} = ${converted} ${to.toUpperCase()}`;
+    } catch (e) {
+        resultDiv.textContent = "Error fetching exchange rate.";
+    }
+}
+</script>
+</body>
+</html>
